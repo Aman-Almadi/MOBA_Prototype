@@ -7,6 +7,7 @@ public class EnemyAI : MonoBehaviour
     private Transform player;
     private Vector3 wanderTarget;
     private Animator animator;
+    private PlayerHealth playerHealth;
 
     public float detectionRange = 7f;
     public float wanderRadius = 10f;
@@ -17,6 +18,7 @@ public class EnemyAI : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
+        playerHealth = player.GetComponent<PlayerHealth>();
 
         SetRandomWanderTarget();
     }
@@ -59,6 +61,18 @@ public class EnemyAI : MonoBehaviour
             wanderTarget = hit.position;
 
             agent.SetDestination(wanderTarget);
+        }
+    }
+
+    private void AttackPlayer()
+    {
+        agent.ResetPath();
+        transform.LookAt(player);
+        animator.SetTrigger("Attack");
+
+        if (playerHealth != null)
+        {
+            playerHealth.TakeDamage(20);    //Enemy deals 20 damage
         }
     }
 }

@@ -1,11 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
-public class EnemyHealth : MonoBehaviour
+public class PlayerHealth : MonoBehaviour
 {
     public int maxHealth = 100;
-    public Slider healthBar;
     private int currentHealth;
+    public Slider healthBar;
+    public GameObject gameOverScreen;
     private Animator animator;
     private bool isDead = false;
 
@@ -13,8 +15,6 @@ public class EnemyHealth : MonoBehaviour
     {
         currentHealth = maxHealth;
         animator = GetComponent<Animator>();
-
-        //Assign health bar (Setting it manually in Unity)
         healthBar.maxValue = maxHealth;
         healthBar.value = currentHealth;
     }
@@ -37,9 +37,11 @@ public class EnemyHealth : MonoBehaviour
         isDead = true;
 
         animator.SetTrigger("Die");
+        gameOverScreen.SetActive(true);
+    }
 
-        GetComponent<Collider>().enabled = false;
-        GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = false;
-        Destroy(gameObject, 3f);    //Destroy after 3 seconds
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
