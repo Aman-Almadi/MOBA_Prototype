@@ -10,9 +10,12 @@ public class PlayerHealth : MonoBehaviour
     private int currentHealth;
     public Slider healthBar;
     public GameObject gameOverScreen;
+    public AudioClip hurtSound;
+    public AudioClip deathSound;
     private Animator animator;
     private SpriteRenderer spriteRenderer;
     private Color originalColor;
+    private AudioSource audioSource;
     private bool isDead = false;
 
     private void Start()
@@ -23,6 +26,7 @@ public class PlayerHealth : MonoBehaviour
 
         spriteRenderer = GetComponent<SpriteRenderer>();
         originalColor = spriteRenderer.color;
+        audioSource = GetComponent<AudioSource>();
     }
 
     public void TakeDamage(int damage)
@@ -33,6 +37,7 @@ public class PlayerHealth : MonoBehaviour
 
         animator.SetTrigger("Hurt");
         UpdateHealthBar();
+        audioSource.PlayOneShot(hurtSound);
         StartCoroutine(HurtEffect());
 
         if (currentHealth <= 0)
@@ -45,8 +50,9 @@ public class PlayerHealth : MonoBehaviour
     {
         isDead = true;
 
+        audioSource.PlayOneShot(deathSound);
         animator.SetTrigger("Die");
-        gameOverScreen.SetActive(true);
+        Invoke("GameOver", 1.5f);
     }
 
     public void RestartGame()
@@ -68,5 +74,10 @@ public class PlayerHealth : MonoBehaviour
         yield return new WaitForSeconds(hurtDuration);
         
         spriteRenderer.color = originalColor;
+    }
+
+    private void GameOver()
+    {
+        gameOverScreen.SetActive(true);
     }
 }

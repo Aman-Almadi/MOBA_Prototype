@@ -5,14 +5,17 @@ public class EnemyHealth : MonoBehaviour
 {
     public int maxHealth = 100;
     public Slider healthBar;
+    public AudioClip hitSound;
     private int currentHealth;
     private Animator animator;
     private bool isDead = false;
+    private AudioSource audioSource;
 
     private void Start()
     {
         currentHealth = maxHealth;
         animator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
 
         //Assign health bar (Setting it manually in Unity)
         healthBar.maxValue = maxHealth;
@@ -24,6 +27,7 @@ public class EnemyHealth : MonoBehaviour
         if (isDead) return;
 
         currentHealth -= damage;
+        audioSource.PlayOneShot(hitSound);
         healthBar.value = currentHealth;
 
         if (currentHealth <= 0)
